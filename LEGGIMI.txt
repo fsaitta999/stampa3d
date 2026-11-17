@@ -1,0 +1,37 @@
+STAMPA 3D - APP WEB INSTALLABILE
+================================
+
+CONTENUTO DEL PACCHETTO
+- index.html              l'app
+- manifest.webmanifest    nome, colori e icone dell'app
+- sw.js                   permette di usarla anche senza internet
+- icon-192.png, icon-512.png, icon-maskable-512.png   icone
+
+PASSO 1: METTERE I FILE ONLINE (serve un indirizzo https)
+
+Opzione A, la piu semplice: Netlify Drop
+ 1. Decomprimi questo zip sul computer.
+ 2. Vai su https://app.netlify.com/drop e crea un account gratuito.
+ 3. Trascina l'intera cartella decompressa nella pagina.
+ 4. Netlify ti da un indirizzo https (es. nome-casuale.netlify.app).
+
+Opzione B: GitHub Pages
+ 1. Crea un account gratuito su https://github.com e un nuovo repository pubblico.
+ 2. Carica tutti i file con "Add file" > "Upload files".
+ 3. Vai in Settings > Pages, scegli "Deploy from a branch", ramo "main", cartella "/ (root)".
+ 4. Dopo un minuto l'indirizzo e https://TUONOME.github.io/NOMEREPOSITORY/
+
+PASSO 2: INSTALLARE SUL TELEFONO ANDROID
+ 1. Apri l'indirizzo con Chrome.
+ 2. Tocca il menu (tre puntini) > "Installa app" (oppure "Aggiungi a schermata Home").
+ 3. Conferma: l'icona compare sulla Home e l'app si apre a schermo intero.
+
+BACKUP DEI DATI
+I dati restano salvati sul telefono, dentro l'app.
+Se disinstalli l'app o cancelli i dati di Chrome, li perdi.
+Fai ogni tanto un backup: ingranaggio in alto nella schermata Progetti >
+"Backup dei dati" > "Esporta dati". Per ripristinare usa "Importa dati".
+
+AGGIORNARE L'APP IN FUTURO
+Sostituisci i file online. Per essere sicuro che i telefoni scarichino la nuova
+versione, cambia il numero in sw.js (es. 'stampa3d-v1' diventa 'stampa3d-v2').

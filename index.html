@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b8a9a">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Coda di stampa 3D</title>
+<style>
+:root{--bg:#eceff2;--card:#fff;--tx:#16212c;--mut:#667382;--ac:#0b8a9a;--acx:#fff;--ln:#dde2e7;--ok:#0b8a9a;--dg:#c43d3d;--lay:#c9d3da;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f161d;--card:#18222c;--tx:#e8edf2;--mut:#93a1af;--ac:#3cc4d4;--acx:#06222a;--ln:#2a3844;--ok:#3cc4d4;--dg:#ff7a7a;--lay:#2a3844;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f161d;--card:#18222c;--tx:#e8edf2;--mut:#93a1af;--ac:#3cc4d4;--acx:#06222a;--ln:#2a3844;--ok:#3cc4d4;--dg:#ff7a7a;--lay:#2a3844;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
+#app{max-width:480px;margin:0 auto;padding:12px 14px 96px}
+header{display:flex;align-items:center;gap:8px;padding:8px 0 14px}
+header h1{flex:1;margin:0;font-size:24px;font-weight:700;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ib{border:0;background:var(--card);color:var(--tx);width:42px;height:42px;border-radius:50%;font-size:20px;cursor:pointer;border:1px solid var(--ln)}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:14px;margin-bottom:12px}
+.tap{cursor:pointer}
+.card b{font-size:18px;display:block}
+small{color:var(--mut);font-size:13px}
+.bar{height:10px;border-radius:5px;margin:10px 0 8px;background:repeating-linear-gradient(0deg,var(--lay) 0 2px,transparent 2px 4px);overflow:hidden}
+.bar i{display:block;height:100%;background:repeating-linear-gradient(0deg,var(--ok) 0 2px,transparent 2px 4px);border-radius:5px}
+.meta{display:flex;justify-content:space-between;font-size:14px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:10px}
+.stats div{display:flex;flex-direction:column}
+.stats span{font-size:19px;font-weight:650}
+.ch{padding-bottom:6px;margin-bottom:2px;border-bottom:1px solid var(--ln);cursor:pointer}
+.ch small{display:block}
+.fr{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--ln);cursor:pointer}
+.fi{flex:1;min-width:0;display:flex;flex-direction:column}
+.fn{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fi small{display:flex;flex-wrap:wrap;gap:2px 12px}
+.fc{font-weight:600}
+.fr.dn .fn{text-decoration:line-through;color:var(--mut)}
+.fr.dn .fi,.fr.dn .fc{opacity:.6}
+.ck{flex:none;width:30px;height:30px;border-radius:8px;border:2px solid var(--mut);background:transparent;color:var(--acx);font-size:18px;font-weight:700;cursor:pointer;padding:0}
+.ck.on{background:var(--ok);border-color:var(--ok)}
+.add{width:100%;border:0;background:none;color:var(--ac);font:inherit;font-weight:600;padding:12px 0 2px;cursor:pointer;text-align:left}
+.wide{width:100%;border:2px dashed var(--ln);background:none;color:var(--ac);font:inherit;font-weight:600;padding:14px;border-radius:14px;cursor:pointer}
+.fab{position:fixed;right:max(18px,calc(50% - 222px));bottom:calc(20px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:18px;border:0;background:var(--ac);color:var(--acx);font-size:30px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.empty{color:var(--mut);text-align:center;padding:40px 10px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sh{background:var(--card);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow:auto}
+.sh h2{margin:0 0 12px;font-size:20px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut);grid-column:span 2}
+label.h{grid-column:span 1}
+input,select{font:inherit;font-size:16px;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:10px;padding:11px;width:100%}
+input:focus-visible,button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.pv{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:var(--bg);font-size:14px;min-height:20px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.pv:empty{display:none}
+.row{display:flex;gap:8px;margin-top:14px}
+.b{flex:1;font:inherit;font-weight:600;padding:13px;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);cursor:pointer}
+.b.p{background:var(--ac);color:var(--acx);border-color:var(--ac);flex:1.4}
+.b.d{color:var(--dg)}
+.pr{padding:12px 0;border-top:1px solid var(--ln)}.pr:first-of-type{border-top:0}
+.sm2{margin-top:14px;padding-top:12px;border-top:1px solid var(--ln)}
+.tg{width:100%;display:flex;justify-content:space-between;align-items:center;border:0;background:none;color:var(--ac);font:inherit;font-weight:700;padding:4px 0;cursor:pointer;text-align:left}
+.stats.sm{margin-top:8px}.stats.sm span{font-size:16px}
+.pp{aspect-ratio:16/5;border-radius:12px;background:var(--bg);border:1px dashed var(--ln);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--mut);cursor:pointer;text-align:center;touch-action:none}
+.pp img{width:100%;height:100%;object-fit:cover;display:block;user-select:none}
+input[type=file]{display:none}
+.th{width:100%;aspect-ratio:16/5;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const K='stampa3d-proto',$=s=>document.querySelector(s);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const today=new Date().toISOString().slice(0,10);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const eur=n=>n.toLocaleString('it-IT',{style:'currency',currency:'EUR'});
+const tm=m=>{m=Math.round(m);return Math.floor(m/60)+' h '+String(m%60).padStart(2,'0')+' min'};
+const dt=d=>{try{return new Date(d).toLocaleDateString('it-IT')}catch(e){return d}};
+let S,V=null;const OPEN={};
+const DM=()=>[{id:uid(),name:'PLA',kg:20},{id:uid(),name:'PLA+',kg:24},{id:uid(),name:'ABS',kg:22},{id:uid(),name:'Resina',kg:35}],DP=()=>[{id:uid(),name:'Stampante 1',w:120}];
+function demo(){return{set:{kwh:0.25},mat:DM(),pr:DP(),p:[{id:uid(),name:'Drago articolato',start:today,cats:[
+{id:uid(),name:'Corpo',files:[{id:uid(),name:'testa_drago.stl',sc:100,min:215,g:48,done:true},{id:uid(),name:'busto.stl',sc:100,min:380,g:92,done:false}]},
+{id:uid(),name:'Ali',files:[{id:uid(),name:'ala_sinistra.stl',sc:85,min:260,g:61,done:false}]}]}]}}
+try{S=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(!S||!S.p)S=demo();
+if(!S.mat){const o=S.set||{};S.mat=DM();S.mat[0].kg=o.kg||20;S.pr=[{id:uid(),name:'Stampante 1',w:o.w||120}];S.set={kwh:o.kwh||0.25}}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const gm=f=>S.mat.find(x=>x.id===f.mat)||S.mat[0]||{name:'',kg:0},gp=f=>S.pr.find(x=>x.id===f.pr)||S.pr[0]||{name:'',w:0};
+const calc=f=>{const mat=f.g/1000*gm(f).kg,en=gp(f).w/1000*(f.min/60)*S.set.kwh;return{mat,en,tot:mat+en}};
+const sum=fs=>fs.reduce((a,f)=>{const c=calc(f);a.g+=f.g;a.min+=f.min;a.tot+=c.tot;a.mat+=c.mat;a.en+=c.en;a.n++;a.d+=f.done?1:0;return a},{g:0,min:0,tot:0,mat:0,en:0,n:0,d:0});
+const pf=p=>p.cats.flatMap(c=>c.files);
+
+function shrink(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.8))};im.src=r.result};r.readAsDataURL(file)}
+function sheet(title,fields,ok,o={}){
+  const el=document.createElement('div');el.className='ov';
+  el.innerHTML=`<div class="sh"><h2>${esc(title)}</h2><div class="g">${fields.map(f=>`<label class="${f.h?'h':''}">${esc(f.l)}${f.t==='photo'?`<div class="pp" id="pp_${f.k}"></div><input id="f_${f.k}" type="file" accept="image/*"><div class="row"><button class="b" type="button" id="pc_${f.k}">Cambia foto</button><button class="b" type="button" id="pr_${f.k}">Rimuovi foto</button></div>`:f.t==='select'?`<select id="f_${f.k}">${f.o.map(o=>`<option value="${o.v}"${o.v===f.v?' selected':''}>${esc(o.l)}</option>`).join('')}</select>`:`<input id="f_${f.k}" type="${f.t||'text'}" ${f.t==='number'?'inputmode="decimal" step="any" min="0"':''} value="${esc(f.v??'')}">`}</label>`).join('')}</div><div class="pv"></div><div class="row">${o.del?'<button class="b d" id="bd">Elimina</button>':''}<button class="b" id="bc">Annulla</button><button class="b p" id="bs">Salva</button></div></div>`;
+  document.body.appendChild(el);
+  const ph={},ps={};fields.forEach(f=>{if(f.t==='photo'){ph[f.k]=f.v||'';ps[f.k]=f.p||{x:50,y:50}}});
+  const vals=()=>{const v={};fields.forEach(f=>{if(f.t==='photo'){v[f.k]=ph[f.k];v[f.k+'Pos']=ps[f.k];return}const x=el.querySelector('#f_'+f.k).value;v[f.k]=f.t==='number'?(parseFloat(String(x).replace(',','.'))||0):x.trim()});return v};
+  fields.filter(f=>f.t==='photo').forEach(f=>{
+    const pp=el.querySelector('#pp_'+f.k),inp=el.querySelector('#f_'+f.k),rm=el.querySelector('#pr_'+f.k);
+    const show=()=>{pp.innerHTML=ph[f.k]?`<img src="${ph[f.k]}" alt="" draggable="false" style="object-position:${ps[f.k].x}% ${ps[f.k].y}%">`:'<span>Tocca per aggiungere una foto</span>';rm.parentNode.style.display=ph[f.k]?'':'none'};
+    inp.onchange=()=>{const fl=inp.files[0];if(fl)shrink(fl,u=>{ph[f.k]=u;ps[f.k]={x:50,y:50};show()})};
+    rm.onclick=()=>{ph[f.k]='';inp.value='';show()};
+    el.querySelector('#pc_'+f.k).onclick=()=>inp.click();
+    pp.onclick=e=>{if(ph[f.k])e.preventDefault()};
+    pp.onpointerdown=e=>{const im=pp.querySelector('img');if(!im)return;e.preventDefault();pp.setPointerCapture(e.pointerId);
+      const W=pp.clientWidth,H=pp.clientHeight,s=Math.max(W/im.naturalWidth,H/im.naturalHeight),ox=im.naturalWidth*s-W,oy=im.naturalHeight*s-H,x0=e.clientX,y0=e.clientY,p0={...ps[f.k]},c=n=>Math.max(0,Math.min(100,n));
+      pp.onpointermove=ev=>{ps[f.k]={x:ox>1?c(p0.x-(ev.clientX-x0)/ox*100):p0.x,y:oy>1?c(p0.y-(ev.clientY-y0)/oy*100):p0.y};im.style.objectPosition=ps[f.k].x+'% '+ps[f.k].y+'%'};
+      pp.onpointerup=pp.onpointercancel=()=>{pp.onpointermove=null}};
+    show();
+  });
+  const pv=()=>{if(o.pv)el.querySelector('.pv').innerHTML=o.pv(vals())};
+  el.addEventListener('input',pv);pv();
+  const close=()=>el.remove();
+  el.onclick=e=>{if(e.target===el)close()};
+  el.querySelector('#bc').onclick=close;
+  el.querySelector('#bs').onclick=()=>{if(ok(vals())!==false){save();close();render()}};
+  const bd=el.querySelector('#bd');
+  if(bd)bd.onclick=()=>{if(bd.dataset.s){o.del();save();close();render()}else{bd.dataset.s=1;bd.textContent='Conferma eliminazione'}};
+  const first=el.querySelector('input');if(first&&!first.value)first.focus();
+}
+
+const ACT={
+ open:({p})=>{V=p;render();scrollTo(0,0)},
+ back:()=>{V=null;render()},
+ exp:()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='stampa3d-backup-'+today+'.json';document.body.appendChild(a);a.click();a.remove()},
+ imp:()=>$('#impf').click(),
+ tgl:({p})=>{OPEN[p]=!OPEN[p];render()},
+ sett:()=>{V='set';render();scrollTo(0,0)},
+ editkwh:()=>sheet('Costo energia',[{k:'kwh',l:'Costo energia (€/kWh)',t:'number',v:S.set.kwh}],v=>{S.set.kwh=v.kwh}),
+ newm:()=>matSheet(),
+ editm:({m})=>matSheet(m),
+ newr:()=>prSheet(),
+ editr:({r})=>prSheet(r),
+ newp:()=>sheet('Nuovo progetto',[{k:'name',l:'Nome progetto'},{k:'start',l:'Data di inizio',t:'date',v:today},{k:'img',l:'Foto del progetto (trascinala per spostarla)',t:'photo',v:''}],v=>{
+  if(!v.name)return false;const p={id:uid(),name:v.name,start:v.start||today,img:v.img,pos:v.imgPos,cats:[]};S.p.push(p);V=p.id}),
+ editp:()=>{const p=S.p.find(x=>x.id===V);sheet('Modifica progetto',[{k:'name',l:'Nome progetto',v:p.name},{k:'start',l:'Data di inizio',t:'date',v:p.start},{k:'img',l:'Foto del progetto (trascinala per spostarla)',t:'photo',v:p.img||'',p:p.pos}],v=>{
+  if(!v.name)return false;p.name=v.name;p.start=v.start||p.start;p.img=v.img;p.pos=v.imgPos},{del:()=>{S.p=S.p.filter(x=>x.id!==p.id);V=null}})},
+ newc:()=>{const p=S.p.find(x=>x.id===V);sheet('Nuova categoria',[{k:'name',l:'Nome categoria'}],v=>{
+  if(!v.name)return false;p.cats.push({id:uid(),name:v.name,files:[]})})},
+ editc:({c})=>{const p=S.p.find(x=>x.id===V),k=p.cats.find(x=>x.id===c);sheet('Modifica categoria',[{k:'name',l:'Nome categoria',v:k.name}],v=>{
+  if(!v.name)return false;k.name=v.name},{del:()=>{p.cats=p.cats.filter(x=>x.id!==c)}})},
+ tog:({c,f})=>{const k=S.p.find(x=>x.id===V).cats.find(x=>x.id===c),x=k.files.find(y=>y.id===f);x.done=!x.done;save();render()},
+ newf:({c})=>fileSheet(c),
+ editf:({c,f})=>fileSheet(c,f)
+};
+function fileSheet(c,fid){
+  const k=S.p.find(x=>x.id===V).cats.find(x=>x.id===c),x=fid?k.files.find(y=>y.id===fid):null;
+  sheet(x?'Modifica file':'Nuovo file',[
+   {k:'name',l:'Nome file',v:x?x.name:''},
+   {k:'mat',l:'Materiale',t:'select',v:x?gm(x).id:(S.mat[0]||{}).id,o:S.mat.map(m=>({v:m.id,l:m.name+' ('+m.kg+' €/kg)'}))},
+   {k:'pr',l:'Stampante',t:'select',v:x?gp(x).id:(S.pr[0]||{}).id,o:S.pr.map(r=>({v:r.id,l:r.name}))},
+   {k:'sc',l:'Scala di stampa (%)',t:'number',v:x?x.sc:100,h:1},
+   {k:'g',l:'Materiale (g)',t:'number',v:x?x.g:'',h:1},
+   {k:'h',l:'Tempo: ore',t:'number',v:x?Math.floor(x.min/60):'',h:1},
+   {k:'m',l:'Tempo: minuti',t:'number',v:x?x.min%60:'',h:1}],
+  v=>{if(!v.name)return false;const d={name:v.name,sc:v.sc,g:v.g,mat:v.mat,pr:v.pr,min:Math.round(v.h*60+v.m)};
+   if(x)Object.assign(x,d);else k.files.push({id:uid(),done:false,...d})},
+  {del:x?()=>{k.files=k.files.filter(y=>y.id!==fid)}:null,
+   pv:v=>{const c=calc({g:v.g,min:v.h*60+v.m,mat:v.mat,pr:v.pr});return`<span>Materiale ${eur(c.mat)}</span><span>Energia ${eur(c.en)}</span><b>Totale ${eur(c.tot)}</b>`}});
+}
+
+function matSheet(id){
+  const x=id?S.mat.find(y=>y.id===id):null,u=x?S.p.flatMap(pf).filter(f=>gm(f).id===x.id).length:0;
+  sheet(x?'Modifica materiale':'Nuovo materiale',[{k:'name',l:'Nome (es. PLA+, ABS, resina)',v:x?x.name:''},{k:'kg',l:'Costo (€/kg)',t:'number',v:x?x.kg:''}],
+  v=>{if(!v.name)return false;if(x){x.name=v.name;x.kg=v.kg}else S.mat.push({id:uid(),name:v.name,kg:v.kg})},
+  {del:x&&!u?()=>{S.mat=S.mat.filter(y=>y.id!==id)}:null,pv:()=>u?`<span>Usato da ${u} file: non si può eliminare</span>`:''});
+}
+function prSheet(id){
+  const x=id?S.pr.find(y=>y.id===id):null,u=x?S.p.flatMap(pf).filter(f=>gp(f).id===x.id).length:0;
+  sheet(x?'Modifica stampante':'Nuova stampante',[{k:'name',l:'Nome stampante',v:x?x.name:''},{k:'w',l:'Consumo medio (W)',t:'number',v:x?x.w:''}],
+  v=>{if(!v.name)return false;if(x){x.name=v.name;x.w=v.w}else S.pr.push({id:uid(),name:v.name,w:v.w})},
+  {del:x&&!u?()=>{S.pr=S.pr.filter(y=>y.id!==id)}:null,pv:()=>u?`<span>Usata da ${u} file: non si può eliminare</span>`:''});
+}
+function setView(){
+  const row=(a,k,n,r)=>`<div class="fr" data-a="${a}" data-${k}="${n.id}"><div class="fi"><span class="fn">${esc(n.name)}</span></div><span class="fc">${r}</span></div>`;
+  return`<header><button class="ib" data-a="back" aria-label="Indietro">‹</button><h1>Costi e stampanti</h1></header>
+  <section class="card"><b>Materiali</b><small>Costo al chilogrammo</small>${S.mat.map(m=>row('editm','m',m,eur(m.kg)+'/kg')).join('')}<button class="add" data-a="newm">+ Aggiungi materiale</button></section>
+  <section class="card"><b>Stampanti</b><small>Consumo medio per ora</small>${S.pr.map(r=>row('editr','r',r,r.w+' W')).join('')}<button class="add" data-a="newr">+ Aggiungi stampante</button></section>
+  <section class="card"><b>Energia</b>${row('editkwh','x',{id:'x',name:'Costo elettricità'},eur(S.set.kwh)+'/kWh')}</section>
+  <section class="card"><b>Backup dei dati</b><small>Salva i dati in un file o ripristinali da un backup</small><div class="row"><button class="b" data-a="exp">Esporta dati</button><button class="b" data-a="imp">Importa dati</button></div><input id="impf" type="file" accept=".json,application/json"></section>`;
+}
+const stats=s=>`<div class="stats"><div><small>Costo totale</small><span>${eur(s.tot)}</span></div><div><small>Tempo di stampa</small><span>${tm(s.min)}</span></div><div><small>Costo materiale</small><span>${eur(s.mat)}</span></div><div><small>Materiale</small><span>${Math.round(s.g)} g</span></div><div><small>Costo energia</small><span>${eur(s.en)}</span></div></div>`;
+function byPr(p){
+  const m=new Map();
+  pf(p).forEach(f=>{const r=gp(f),c=calc(f),a=m.get(r.id)||{n:r.name,files:0,min:0,g:0,mat:0,en:0};a.files++;a.min+=f.min;a.g+=f.g;a.mat+=c.mat;a.en+=c.en;m.set(r.id,a)});
+  if(!m.size)return'';
+  return`<div class="sm2"><button class="tg" data-a="tgl" data-p="${p.id}" aria-expanded="${!!OPEN[p.id]}"><span>Riassunto di stampa</span><span>${OPEN[p.id]?'▴':'▾'}</span></button>`+(OPEN[p.id]?[...m.values()].map(a=>`<div class="pr"><div class="meta"><b>${esc(a.n||'Senza stampante')}</b><span>${eur(a.mat+a.en)}</span></div><small>${a.files} file</small><div class="stats sm"><div><small>Tempo di stampa</small><span>${tm(a.min)}</span></div><div><small>Materiale</small><span>${Math.round(a.g)} g</span></div><div><small>Costo materiale</small><span>${eur(a.mat)}</span></div><div><small>Costo energia</small><span>${eur(a.en)}</span></div></div></div>`).join(''):'')+`</div>`;
+}
+const th=p=>p.img?`<img class="th" src="${p.img}" alt="" style="object-position:${(p.pos||{x:50}).x}% ${(p.pos||{y:50}).y??50}%">`:'';
+function home(){
+  return`<header><h1>Progetti</h1><button class="ib" data-a="sett" aria-label="Costi e stampanti">⚙</button></header>`+
+  (S.p.length?S.p.map(p=>{const s=sum(pf(p));return`<div class="card tap" data-a="open" data-p="${p.id}">${th(p)}<b>${esc(p.name)}</b><small>Iniziato il ${dt(p.start)}</small><div class="bar"><i style="width:${s.n?s.d/s.n*100:0}%"></i></div><div class="meta"><span>${s.d} di ${s.n} stampati</span></div>${stats(s)}${byPr(p)}</div>`}).join(''):'<p class="empty">Nessun progetto. Premi + per crearne uno.</p>')+
+  `<button class="fab" data-a="newp" aria-label="Nuovo progetto">+</button>`;
+}
+function proj(p){
+  const s=sum(pf(p));
+  return`<header><button class="ib" data-a="back" aria-label="Indietro">‹</button><h1>${esc(p.name)}</h1><button class="ib" data-a="editp" aria-label="Modifica progetto">✎</button></header>
+  
+  `+
+  p.cats.map(c=>{const t=sum(c.files);return`<section class="card"><div class="ch" data-a="editc" data-c="${c.id}"><b>${esc(c.name)}</b><small>${t.d} di ${t.n} stampati</small></div>`+
+   c.files.map(f=>`<div class="fr${f.done?' dn':''}" data-a="editf" data-c="${c.id}" data-f="${f.id}"><button class="ck${f.done?' on':''}" data-a="tog" data-c="${c.id}" data-f="${f.id}" aria-label="Segna come stampato">${f.done?'✓':''}</button><div class="fi"><span class="fn">${esc(f.name)}</span><small><span>${esc(gm(f).name)}</span><span>${esc(gp(f).name)}</span><span>${f.sc}%</span><span>${tm(f.min)}</span><span>${f.g} g</span></small></div><span class="fc">${eur(calc(f).tot)}</span></div>`).join('')+
+   `<button class="add" data-a="newf" data-c="${c.id}">+ Aggiungi file</button></section>`}).join('')+
+  `<button class="wide" data-a="newc">+ Nuova categoria</button>`;
+}
+function render(){
+  const p=S.p.find(x=>x.id===V);if(V&&V!=='set'&&!p)V=null;if(V==='set')return void($('#app').innerHTML=setView());
+  $('#app').innerHTML=p?proj(p):home();
+}
+$('#app').onchange=e=>{if(e.target.id!=='impf')return;const fl=e.target.files[0];if(!fl)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.p||!d.mat||!d.pr||!d.set)throw 0;if(confirm('Sostituire tutti i dati attuali con quelli del backup?')){S=d;save();V=null;render()}}catch(x){alert('File di backup non valido.')}};r.readAsText(fl)};
+$('#app').onclick=e=>{const t=e.target.closest('[data-a]');if(t)ACT[t.dataset.a](t.dataset)};
+render();
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
